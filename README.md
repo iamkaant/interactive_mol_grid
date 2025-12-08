@@ -33,12 +33,12 @@ conda create -n mol_aligner python=3.9
 conda activate mol_aligner
 
 # Install RDKit from conda-forge
-conda install -c conda-forge rdkit
+conda install -c conda-forge rdkit=2023.03.1
 
 # Install PyQt5 and Pillow
 conda install pyqt pillow
 # Or using pip
-pip install rdkit PyQt5 pillow
+pip install rdkit>=2023.03.1 PyQt5 pillow
 ```
 
 **Note:** Installing RDKit via pip can be challenging on some systems. Conda installation is strongly recommended.
