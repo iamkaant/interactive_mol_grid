@@ -7,6 +7,7 @@ Install: pip install rdkit PyQt5 pillow
 from rdkit import Chem, Geometry
 from rdkit.Chem import AllChem, Draw, rdFMCS
 from rdkit.Chem.Draw import rdMolDraw2D
+from rdkit.Chem import rdDepictor
 from PyQt5.QtWidgets import (QApplication, QMainWindow, QWidget, QVBoxLayout,
                              QHBoxLayout, QScrollArea, QLabel, QPushButton,
                              QFileDialog, QMessageBox, QLineEdit, QSpinBox,
@@ -692,6 +693,7 @@ class MoleculeAlignmentApp(QMainWindow):
         # Find MCS between reference and each molecule
         match_list = []
         mcs_sizes = []
+        rdDepictor.SetPreferCoordGen(True)
 
         for mol in mols:
             mcs = rdFMCS.FindMCS([self.reference_mol, mol],
@@ -731,7 +733,7 @@ class MoleculeAlignmentApp(QMainWindow):
 
         # Align structures based on first molecule's match
         if match_list[0]:
-            AllChem.Compute2DCoords(mols[0])
+            AllChem.Compute2DCoords(mols[0], useRingTemplates=True)
             coords = [mols[0].GetConformer().GetAtomPosition(x) for x in match_list[0]]
             coords2D = [Geometry.Point2D(pt.x, pt.y) for pt in coords]
 
@@ -746,7 +748,7 @@ class MoleculeAlignmentApp(QMainWindow):
                     AllChem.Compute2DCoords(mol, coordMap=coord_dict)
                 else:
                     # No match or size mismatch, compute coords normally
-                    AllChem.Compute2DCoords(mol)
+                    AllChem.Compute2DCoords(mol, useRingTemplates=True)
         else:
             # No matches at all, just compute coords for all
             for mol in mols:
